@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart ML Report Generator</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <div class="logo">
+
+                <i class="fa-solid fa-brain"></i>
+
+            </div>
+
+            <h1>Smart ML Report Generator</h1>
+
+            
+
+            <form action="/report" method="POST" enctype="multipart/form-data">
+
+                <div class="input-box">
+
+                    <label>
+
+                        <i class="fa-solid fa-user"></i>
+
+                        Full Name
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Enter your name"
+                        required>
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        <i class="fa-solid fa-file-csv"></i>
+
+                        Upload CSV Dataset
+
+                    </label>
+
+                    <input
+                        type="file"
+                        name="dataset"
+                        accept=".csv"
+                        required>
+
+                </div>
+
+                <button type="submit">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    Generate Report
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

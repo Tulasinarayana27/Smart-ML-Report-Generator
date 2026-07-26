@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart ML Report</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body class="report-page">
+
+<div class="dashboard">
+
+    <div class="header">
+
+        <i class="fa-solid fa-brain"></i>
+
+        <h1>Smart ML Report Generator</h1>
+
+        <p>Machine Learning Analysis Report</p>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card-box">
+
+            <i class="fa-solid fa-user"></i>
+
+            <h3>User</h3>
+
+            <p>{{ username }}</p>
+
+        </div>
+
+        <div class="card-box">
+
+            <i class="fa-solid fa-file-csv"></i>
+
+            <h3>Dataset</h3>
+
+            <p>{{ filename }}</p>
+
+        </div>
+
+        <div class="card-box">
+
+            <i class="fa-solid fa-table"></i>
+
+            <h3>Rows</h3>
+
+            <p>{{ rows }}</p>
+
+        </div>
+
+        <div class="card-box">
+
+            <i class="fa-solid fa-columns"></i>
+
+            <h3>Columns</h3>
+
+            <p>{{ columns }}</p>
+
+        </div>
+
+    </div>
+
+    <div class="summary">
+
+        <h2>Dataset Summary</h2>
+
+        <table>
+
+            <tr>
+
+                <td>Missing Values</td>
+
+                <td>{{ quality.missing }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Duplicate Rows</td>
+
+                <td>{{ quality.duplicates }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Dataset Quality</td>
+
+                <td>{{ quality.quality }}/100</td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div class="best-model">
+
+        <h2>
+
+            <i class="fa-solid fa-trophy"></i>
+
+            Best Performing Model
+
+        </h2>
+
+        <h3>{{ best_model }}</h3>
+
+        <h1>{{ best_accuracy }}%</h1>
+
+    </div>
+
+    <div class="comparison">
+
+        <h2>Model Comparison</h2>
+
+        <table>
+
+            <tr>
+
+                <th>Model</th>
+
+                <th>Accuracy (%)</th>
+
+            </tr>
+
+            {% for model, accuracy in results.items() %}
+
+            <tr>
+
+                <td>{{ model }}</td>
+
+                <td>{{ accuracy }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+    <div class="recommendation">
+
+        <h2>
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+            Recommendation
+
+        </h2>
+
+        <ul>
+
+            <li>Dataset preprocessing completed successfully.</li>
+
+            <li><strong>{{ best_model }}</strong> achieved the highest accuracy.</li>
+
+            <li>Dataset Quality Score: <strong>{{ quality.quality }}/100</strong>.</li>
+
+            <li>The dataset is ready for prediction and further analysis.</li>
+
+        </ul>
+
+    </div>
+
+    <div class="download">
+
+        <a href="/download">
+
+            <i class="fa-solid fa-download"></i>
+
+            Download PDF Report
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
