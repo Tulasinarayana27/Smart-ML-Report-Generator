@@ -10,6 +10,11 @@ from report_generator import generate_pdf
 
 app = Flask(__name__)
 
+
+# -------------------------------
+# Folder Configuration
+# -------------------------------
+
 UPLOAD_FOLDER = "uploads"
 REPORT_FOLDER = "reports"
 
@@ -22,69 +27,167 @@ app.config["REPORT_FOLDER"] = REPORT_FOLDER
 
 # Store latest report data
 report_data = {}
-# Store latest report data
-report_data = {}
 
+
+# -------------------------------
+# Home Page
+# -------------------------------
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
+
+# -------------------------------
+# Generate Report
+# -------------------------------
+
 @app.route("/report", methods=["POST"])
 def report():
 
     global report_data
 
-    username = request.form["username"]
-    dataset = request.files["dataset"]
+    try:
 
-    filepath = os.path.join(app.config["UPLOAD_FOLDER"], dataset.filename)
-    dataset.save(filepath)
+        # Get username
+        username = request.form.get("username")
 
-    df = pd.read_csv(filepath)
+        # Get uploaded file
+        dataset = request.files.get("dataset")
 
-    df = preprocess_dataset(df)
 
-    rows = df.shape[0]
-    columns = df.shape[1]
+        if dataset is None:
+            return "No dataset uploaded"
 
-    quality = calculate_dataset_quality(df)
 
-    best_model, best_accuracy, results = train_models(df)
+        # Save uploaded dataset
+        filepath = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            dataset.filename
+        )
 
-    # Save data for PDF generation
-    report_data = {
-        "username": username,
-        "filename": dataset.filename,
-        "rows": rows,
-        "columns": columns,
-        "best_model": best_model,
-        "best_accuracy": best_accuracy,
-        "results": results,
-        "quality": quality
-    }
+        dataset.save(filepath)
 
-    return render_template(
-        "report.html",
-        username=username,
-        filename=dataset.filename,
-        rows=rows,
-        columns=columns,
-        best_model=best_model,
-        best_accuracy=best_accuracy,
-        results=results,
-        quality=quality
-    )
 
+
+        # Read CSV
+        df = pd.read_csv(filepath)
+
+
+        # Limit dataset size for Render free server
+        if len(df) > 10000:
+            df = df.sample(
+                10000,
+                random_state=42
+            )
+
+
+        # Data preprocessing
+        df = preprocess_dataset(df)
+
+
+        rows = df.shape[0]
+        columns = df.shape[1]
+
+
+        # Dataset quality analysis
+        quality = calculate_dataset_quality(df)
+
+
+        # Train ML models
+        best_model, best_accuracy, results = train_models(df)
+
+
+
+        # Store report information
+        report_data = {
+
+            "username": username,
+
+            "filename": dataset.filename,
+
+            "rows": rows,
+
+            "columns": columns,
+
+            "best_model": best_model,
+
+            "best_accuracy": best_accuracy,
+
+            "results": results,
+
+            "quality": quality
+        }
+
+
+
+        return render_template(
+
+            "report.html",
+
+            username=username,
+
+            filename=dataset.filename,
+
+            rows=rows,
+
+            columns=columns,
+
+            best_model=best_model,
+
+            best_accuracy=best_accuracy,
+
+            results=results,
+
+            quality=quality
+
+        )
+
+
+    except Exception as e:
+
+        print("ERROR:", e)
+
+        return f"""
+        <h2>Error occurred</h2>
+        <p>{str(e)}</p>
+        """
+
+
+
+
+# -------------------------------
+# Download PDF
+# -------------------------------
 
 @app.route("/download")
 def download():
 
-    pdf_path = generate_pdf(report_data)
+    try:
 
-    return send_file(pdf_path, as_attachment=True)
+        pdf_path = generate_pdf(report_data)
 
+        return send_file(
+            pdf_path,
+            as_attachment=True
+        )
+
+    except Exception as e:
+
+        return f"PDF Error: {str(e)}"
+
+
+
+
+# -------------------------------
+# Local Run
+# -------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True)
+
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=True
+    )
