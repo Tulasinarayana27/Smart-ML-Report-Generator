@@ -7,14 +7,21 @@ from ml_models import train_models
 from dataset_quality import calculate_dataset_quality
 from report_generator import generate_pdf
 
+
 app = Flask(__name__)
 
-os.makedirs("uploads", exist_ok=True)
-os.makedirs("reports", exist_ok=True)
+UPLOAD_FOLDER = "uploads"
+REPORT_FOLDER = "reports"
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(REPORT_FOLDER, exist_ok=True)
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["REPORT_FOLDER"] = REPORT_FOLDER
 
+
+# Store latest report data
+report_data = {}
 # Store latest report data
 report_data = {}
 
