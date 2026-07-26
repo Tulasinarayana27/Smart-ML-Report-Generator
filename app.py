@@ -9,8 +9,8 @@ from report_generator import generate_pdf
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = "uploads"
-REPORT_FOLDER = "reports"
+os.makedirs("uploads", exist_ok=True)
+os.makedirs("reports", exist_ok=True)
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["REPORT_FOLDER"] = REPORT_FOLDER
